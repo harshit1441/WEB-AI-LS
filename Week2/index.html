@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2 Task Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main class="shell">
+        <section class="hero">
+            <p class="eyebrow">Week 2 Assignment</p>
+            <h1>Task Manager</h1>
+            <p class="lede">Add tasks, edit them in place, remove finished work, and get instant feedback when input is invalid.</p>
+        </section>
+
+        <section class="panel" aria-labelledby="task-form-title">
+            <div class="panel-header">
+                <div>
+                    <p class="panel-kicker">Create a task</p>
+                    <h2 id="task-form-title">What needs to get done?</h2>
+                </div>
+                <div class="task-count" id="task-count">0 tasks</div>
+            </div>
+
+            <form id="task-form" novalidate>
+                <label class="field" for="task-input">
+                    <span>Task title</span>
+                    <input id="task-input" name="task" type="text" placeholder="e.g. Finish JavaScript assignment" autocomplete="off" maxlength="80">
+                </label>
+
+                <div class="actions-row">
+                    <button type="submit" class="primary-btn" id="submit-btn">Add Task</button>
+                    <button type="button" class="secondary-btn" id="cancel-edit-btn" hidden>Cancel Edit</button>
+                </div>
+            </form>
+
+            <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
+            <section class="list-wrap" aria-labelledby="task-list-title">
+                <div class="list-head">
+                    <h3 id="task-list-title">Your tasks</h3>
+                    <button type="button" class="ghost-btn" id="clear-all-btn">Clear All</button>
+                </div>
+                <ul class="task-list" id="task-list"></ul>
+                <div class="empty-state" id="empty-state">
+                    <p>No tasks yet.</p>
+                    <span>Add one above to start tracking your work.</span>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

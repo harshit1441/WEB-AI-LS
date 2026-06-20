@@ -1,0 +1,333 @@
+:root {
+    color-scheme: light;
+    --bg: #0f172a;
+    --bg-soft: #111827;
+    --card: rgba(15, 23, 42, 0.78);
+    --card-border: rgba(255, 255, 255, 0.12);
+    --text: #e5eefc;
+    --muted: #97a6c6;
+    --accent: #7dd3fc;
+    --accent-strong: #38bdf8;
+    --danger: #fb7185;
+    --success: #34d399;
+    --shadow: 0 28px 60px rgba(2, 6, 23, 0.45);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    background:
+        radial-gradient(circle at top left, rgba(56, 189, 248, 0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(52, 211, 153, 0.16), transparent 28%),
+        linear-gradient(160deg, #020617 0%, #0f172a 48%, #111827 100%);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    padding: 32px 18px;
+}
+
+.shell {
+    width: min(960px, 100%);
+    display: grid;
+    gap: 24px;
+    animation: rise 0.6s ease both;
+}
+
+.hero {
+    padding: 8px 4px;
+}
+
+.eyebrow,
+.panel-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.hero h1 {
+    font-size: clamp(2.6rem, 5vw, 4.9rem);
+    line-height: 0.95;
+    margin-top: 10px;
+}
+
+.lede {
+    max-width: 60ch;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.7;
+}
+
+.panel {
+    border: 1px solid var(--card-border);
+    background: linear-gradient(180deg, rgba(17, 24, 39, 0.82), rgba(15, 23, 42, 0.92));
+    backdrop-filter: blur(16px);
+    border-radius: 28px;
+    box-shadow: var(--shadow);
+    padding: 28px;
+}
+
+.panel-header,
+.list-head,
+.actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.panel-header {
+    margin-bottom: 22px;
+}
+
+.panel-header h2,
+.list-head h3 {
+    font-size: clamp(1.25rem, 2vw, 1.6rem);
+    margin-top: 6px;
+}
+
+.task-count {
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(125, 211, 252, 0.12);
+    border: 1px solid rgba(125, 211, 252, 0.22);
+    color: var(--accent);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+form {
+    display: grid;
+    gap: 16px;
+}
+
+.field {
+    display: grid;
+    gap: 9px;
+}
+
+.field span {
+    font-size: 0.94rem;
+    font-weight: 600;
+    color: #d6e2fb;
+}
+
+input {
+    width: 100%;
+    border: 1px solid rgba(148, 163, 184, 0.22);
+    background: rgba(2, 6, 23, 0.45);
+    color: var(--text);
+    border-radius: 16px;
+    padding: 15px 16px;
+    font: inherit;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+input::placeholder {
+    color: #6b7a99;
+}
+
+input:focus {
+    outline: none;
+    border-color: rgba(125, 211, 252, 0.85);
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.14);
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn,
+.task-action {
+    border: 0;
+    border-radius: 14px;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.primary-btn,
+.secondary-btn {
+    padding: 14px 18px;
+}
+
+.primary-btn {
+    background: linear-gradient(135deg, var(--accent-strong), #22c55e);
+    color: #021017;
+    box-shadow: 0 14px 30px rgba(56, 189, 248, 0.18);
+}
+
+.secondary-btn {
+    background: rgba(148, 163, 184, 0.14);
+    color: var(--text);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.ghost-btn,
+.task-action {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--text);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    padding: 10px 14px;
+}
+
+.task-action.edit {
+    background: rgba(125, 211, 252, 0.12);
+    border-color: rgba(125, 211, 252, 0.18);
+}
+
+.task-action.delete {
+    background: rgba(251, 113, 133, 0.12);
+    border-color: rgba(251, 113, 133, 0.2);
+    color: #fecdd3;
+}
+
+.primary-btn:hover,
+.secondary-btn:hover,
+.ghost-btn:hover,
+.task-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 24px rgba(2, 6, 23, 0.16);
+}
+
+.primary-btn:active,
+.secondary-btn:active,
+.ghost-btn:active,
+.task-action:active {
+    transform: translateY(0);
+}
+
+.actions-row {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+}
+
+.notice {
+    min-height: 24px;
+    margin-top: 4px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.notice.success {
+    color: var(--success);
+}
+
+.notice.error {
+    color: var(--danger);
+}
+
+.list-wrap {
+    margin-top: 26px;
+}
+
+.list-head {
+    margin-bottom: 14px;
+}
+
+.task-list {
+    list-style: none;
+    display: grid;
+    gap: 12px;
+}
+
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 18px;
+    border-radius: 18px;
+    background: rgba(2, 6, 23, 0.42);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.task-copy {
+    display: grid;
+    gap: 4px;
+    min-width: 0;
+}
+
+.task-copy strong {
+    font-size: 1rem;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.task-copy span {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.task-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.empty-state {
+    display: none;
+    margin-top: 18px;
+    padding: 22px;
+    border-radius: 20px;
+    background: rgba(148, 163, 184, 0.08);
+    border: 1px dashed rgba(148, 163, 184, 0.18);
+    color: var(--muted);
+    text-align: center;
+    gap: 8px;
+}
+
+.empty-state p {
+    color: var(--text);
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.empty-state.show {
+    display: grid;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 720px) {
+    .panel {
+        padding: 20px;
+        border-radius: 22px;
+    }
+
+    .panel-header,
+    .list-head,
+    .task-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .task-buttons,
+    .actions-row {
+        width: 100%;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .ghost-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
