@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Task Planner - Agentic AI</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glow-bg"></div>
+    
+    <main class="shell">
+        <!-- Hero Header -->
+        <header class="hero animate-fade-in">
+            <div class="badge">Week 3 Assignment</div>
+            <h1>Smart Task Planner</h1>
+            <p class="lede">Power your productivity with AI. Define a major goal, and let Gemini generate a structured step-by-step roadmap. Tweak the plan, track completion, or add custom tasks manually.</p>
+        </header>
+
+        <!-- Main Workspace Grid -->
+        <div class="workspace-grid">
+            
+            <!-- Left Column: AI Planner Panel -->
+            <section class="panel glass-panel animate-slide-up" aria-labelledby="ai-planner-title">
+                <div class="panel-header">
+                    <span class="panel-kicker">AI Goal Generator</span>
+                    <h2 id="ai-planner-title">Describe Your Goal</h2>
+                </div>
+                
+                <form id="ai-planner-form" novalidate>
+                    <div class="field">
+                        <label for="goal-input">What do you want to accomplish?</label>
+                        <textarea id="goal-input" placeholder="e.g. Plan a 3-day weekend trip to Tokyo with budget options, or Learn basic Python programming in a week..." required maxlength="200"></textarea>
+                    </div>
+
+                    <div class="field">
+                        <label for="model-select">AI Assistant Model</label>
+                        <div class="select-wrapper">
+                            <select id="model-select">
+                                <option value="gemini-2.5-flash" selected>Gemini 2.5 Flash (Fast &amp; Accurate)</option>
+                                <option value="gemini-1.5-flash">Gemini 1.5 Flash (Legacy Fast)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="primary-btn glow-btn" id="generate-btn">
+                        <span class="btn-text">✨ Generate Step-by-Step Plan</span>
+                    </button>
+                </form>
+
+                <!-- Status / Error Notification inside the Planner Panel -->
+                <div id="ai-status-notice" class="status-notice hidden" role="alert">
+                    <div class="notice-icon">⚠️</div>
+                    <div class="notice-text">
+                        <strong class="notice-title">Error generating plan</strong>
+                        <span id="ai-status-message">Something went wrong.</span>
+                    </div>
+                    <button type="button" class="notice-close" id="close-notice-btn">&times;</button>
+                </div>
+            </section>
+
+            <!-- Right Column: Live Interactive Task Board -->
+            <section class="panel glass-panel main-panel animate-slide-up-delay" aria-labelledby="task-board-title">
+                <div class="panel-header flex-header">
+                    <div>
+                        <span class="panel-kicker">Interactive Board</span>
+                        <h2 id="task-board-title">Your Roadmap</h2>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stat-badge" id="completion-stats">0/0 completed</span>
+                        <span class="stat-badge accent" id="task-count">0 tasks</span>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Manual Task Form (Collapsible/Inline) -->
+                <form id="task-form" class="inline-form" novalidate>
+                    <h3 id="form-action-title">Quick Add Task</h3>
+                    <div class="form-row">
+                        <div class="field flex-grow-3">
+                            <input id="task-input" name="task" type="text" placeholder="Task description..." autocomplete="off" required maxlength="80">
+                        </div>
+                        <div class="field flex-grow-1">
+                            <div class="select-wrapper">
+                                <select id="priority-input" name="priority">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="field flex-grow-1">
+                            <input id="time-input" name="time" type="text" placeholder="Time (e.g. 2h)" autocomplete="off" maxlength="20">
+                        </div>
+                    </div>
+                    <div class="actions-row">
+                        <button type="submit" class="action-btn primary" id="submit-btn">Add Task</button>
+                        <button type="button" class="action-btn secondary" id="cancel-edit-btn" hidden>Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Board Content List -->
+                <div class="board-content">
+                    <div class="list-head">
+                        <h3>Plan Roadmap Steps</h3>
+                        <button type="button" class="ghost-btn" id="clear-all-btn">Clear All</button>
+                    </div>
+
+                    <!-- AI Generation Loading Skeleton (Shimmer Effect) -->
+                    <div id="loading-skeleton" class="loading-skeleton hidden">
+                        <div class="skeleton-title">Consulting Gemini to outline your plan...</div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-circle"></div>
+                            <div class="skeleton-lines">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-circle"></div>
+                            <div class="skeleton-lines">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
+                        </div>
+                        <div class="skeleton-card">
+                            <div class="skeleton-circle"></div>
+                            <div class="skeleton-lines">
+                                <div class="skeleton-line short"></div>
+                                <div class="skeleton-line long"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- The Live Task List -->
+                    <ul class="task-list" id="task-list"></ul>
+
+                    <!-- Empty State -->
+                    <div class="empty-state" id="empty-state">
+                        <div class="empty-icon">🗺️</div>
+                        <p>Your task list is empty</p>
+                        <span>Describe a goal on the left to generate an AI roadmap, or add tasks manually above.</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Client-Side Logic (inside HTML to keep submission structure intact) -->
+    <script>
+        // Frontend JS logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const aiPlannerForm = document.getElementById('ai-planner-form');
+            const goalInput = document.getElementById('goal-input');
+            const modelSelect = document.getElementById('model-select');
+            const generateBtn = document.getElementById('generate-btn');
+            
+            const taskForm = document.getElementById('task-form');
+            const taskInput = document.getElementById('task-input');
+            const priorityInput = document.getElementById('priority-input');
+            const timeInput = document.getElementById('time-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const cancelEditBtn = document.getElementById('cancel-edit-btn');
+            const formActionTitle = document.getElementById('form-action-title');
+            
+            const taskList = document.getElementById('task-list');
+            const taskCountBadge = document.getElementById('task-count');
+            const completionBadge = document.getElementById('completion-stats');
+            const clearAllBtn = document.getElementById('clear-all-btn');
+            const emptyState = document.getElementById('empty-state');
+            
+            const aiStatusNotice = document.getElementById('ai-status-notice');
+            const aiStatusMessage = document.getElementById('ai-status-message');
+            const closeNoticeBtn = document.getElementById('close-notice-btn');
+            const loadingSkeleton = document.getElementById('loading-skeleton');
+
+            const storageKey = 'week3-smart-tasks';
+            let tasks = loadTasks();
+            let editingTaskId = null;
+
+            // Load and Save helpers
+            function loadTasks() {
+                try {
+                    const stored = JSON.parse(localStorage.getItem(storageKey));
+                    return Array.isArray(stored) ? stored : [];
+                } catch {
+                    return [];
+                }
+            }
+
+            function saveTasks() {
+                localStorage.setItem(storageKey, JSON.stringify(tasks));
+            }
+
+            function createTaskId() {
+                return `task-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+            }
+
+            function escapeHtml(value) {
+                return String(value)
+                    .replaceAll('&', '&amp;')
+                    .replaceAll('<', '&lt;')
+                    .replaceAll('>', '&gt;')
+                    .replaceAll('"', '&quot;')
+                    .replaceAll("'", '&#39;');
+            }
+
+            function setNotice(message, type = 'error') {
+                if (message) {
+                    aiStatusMessage.textContent = message;
+                    aiStatusNotice.className = `status-notice ${type} animate-fade-in`;
+                } else {
+                    aiStatusNotice.className = 'status-notice hidden';
+                }
+            }
+
+            closeNoticeBtn.addEventListener('click', () => setNotice(''));
+
+            function resetTaskForm() {
+                taskForm.reset();
+                editingTaskId = null;
+                submitBtn.textContent = 'Add Task';
+                formActionTitle.textContent = 'Quick Add Task';
+                cancelEditBtn.hidden = true;
+            }
+
+            function updateStats() {
+                const total = tasks.length;
+                const completed = tasks.filter(t => t.completed).length;
+                
+                taskCountBadge.textContent = `${total} task${total === 1 ? '' : 's'}`;
+                completionBadge.textContent = `${completed}/${total} completed`;
+                
+                emptyState.classList.toggle('show', total === 0);
+            }
+
+            function renderTasks() {
+                if (tasks.length === 0) {
+                    taskList.innerHTML = '';
+                    updateStats();
+                    return;
+                }
+
+                taskList.innerHTML = tasks.map((task, index) => `
+                    <li class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}" style="--animation-order: ${index}">
+                        <div class="task-checkbox-wrap">
+                            <input type="checkbox" id="check-${task.id}" class="task-checkbox" ${task.completed ? 'checked' : ''} aria-label="Mark task completed">
+                            <label for="check-${task.id}" class="checkbox-custom"></label>
+                        </div>
+                        <div class="task-details">
+                            <span class="task-number">Step ${index + 1}</span>
+                            <strong class="task-title">${escapeHtml(task.title)}</strong>
+                            <div class="task-meta">
+                                <span class="badge priority-${task.priority.toLowerCase()}">${escapeHtml(task.priority)}</span>
+                                <span class="time-badge">⏱️ ${escapeHtml(task.estimatedTime || 'N/A')}</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button type="button" class="action-icon-btn edit" data-action="edit" aria-label="Edit task">✏️</button>
+                            <button type="button" class="action-icon-btn delete" data-action="delete" aria-label="Delete task">&times;</button>
+                        </div>
+                    </li>
+                `).join('');
+
+                updateStats();
+            }
+
+            // Toggle checkbox completion
+            taskList.addEventListener('change', (e) => {
+                if (e.target.classList.contains('task-checkbox')) {
+                    const taskItem = e.target.closest('.task-item');
+                    if (taskItem) {
+                        const taskId = taskItem.dataset.id;
+                        const task = tasks.find(t => t.id === taskId);
+                        if (task) {
+                            task.completed = e.target.checked;
+                            saveTasks();
+                            taskItem.classList.toggle('completed', task.completed);
+                            updateStats();
+                        }
+                    }
+                }
+            });
+
+            // Edit / Delete handler
+            taskList.addEventListener('click', (e) => {
+                const btn = e.target.closest('[data-action]');
+                if (!btn) return;
+
+                const taskItem = e.target.closest('.task-item');
+                if (!taskItem) return;
+
+                const taskId = taskItem.dataset.id;
+                const taskIndex = tasks.findIndex(t => t.id === taskId);
+                if (taskIndex === -1) return;
+
+                const task = tasks[taskIndex];
+
+                if (btn.dataset.action === 'edit') {
+                    editingTaskId = task.id;
+                    taskInput.value = task.title;
+                    priorityInput.value = task.priority;
+                    timeInput.value = task.estimatedTime || '';
+                    submitBtn.textContent = 'Update Task';
+                    formActionTitle.textContent = 'Edit Task';
+                    cancelEditBtn.hidden = false;
+                    taskInput.focus();
+                } else if (btn.dataset.action === 'delete') {
+                    tasks.splice(taskIndex, 1);
+                    saveTasks();
+                    renderTasks();
+                    if (editingTaskId === taskId) {
+                        resetTaskForm();
+                    }
+                }
+            });
+
+            // Manual task form submission
+            taskForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const titleVal = taskInput.value.trim();
+                const priorityVal = priorityInput.value;
+                const timeVal = timeInput.value.trim() || 'N/A';
+
+                if (!titleVal) {
+                    alert('Please enter a task description.');
+                    return;
+                }
+
+                if (editingTaskId) {
+                    const task = tasks.find(t => t.id === editingTaskId);
+                    if (task) {
+                        task.title = titleVal;
+                        task.priority = priorityVal;
+                        task.estimatedTime = timeVal;
+                        saveTasks();
+                        renderTasks();
+                        resetTaskForm();
+                    }
+                } else {
+                    tasks.push({
+                        id: createTaskId(),
+                        title: titleVal,
+                        priority: priorityVal,
+                        estimatedTime: timeVal,
+                        completed: false,
+                        createdAt: new Date().toISOString()
+                    });
+                    saveTasks();
+                    renderTasks();
+                    resetTaskForm();
+                }
+            });
+
+            cancelEditBtn.addEventListener('click', resetTaskForm);
+
+            clearAllBtn.addEventListener('click', () => {
+                if (tasks.length === 0) return;
+                if (confirm('Are you sure you want to clear all tasks from the current plan?')) {
+                    tasks = [];
+                    saveTasks();
+                    renderTasks();
+                    resetTaskForm();
+                }
+            });
+
+            // AI Generation Handler
+            aiPlannerForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const goal = goalInput.value.trim();
+                const model = modelSelect.value;
+
+                if (!goal) {
+                    setNotice('Please enter a goal description.');
+                    return;
+                }
+
+                // UI adjustments during loading
+                setNotice(''); // Clear old notices
+                loadingSkeleton.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                taskList.classList.add('loading-fade');
+                generateBtn.disabled = true;
+                generateBtn.querySelector('.btn-text').textContent = '🤖 Thinking...';
+
+                try {
+                    const response = await fetch('/api/plan', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ goal, model })
+                    });
+
+                    const responseData = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(responseData.error || 'Server responded with an error.');
+                    }
+
+                    // Map the Gemini JSON format to client structure
+                    // The Gemini schema returns { tasks: [{ task_name, priority, estimated_time }] }
+                    if (responseData.tasks && Array.isArray(responseData.tasks)) {
+                        const newTasks = responseData.tasks.map(t => ({
+                            id: createTaskId(),
+                            title: t.task_name,
+                            priority: t.priority || 'Medium',
+                            estimatedTime: t.estimated_time || 'N/A',
+                            completed: false,
+                            createdAt: new Date().toISOString()
+                        }));
+
+                        // Append or replace? Let's REPLACE with the new AI plan, since it's a new goal
+                        tasks = newTasks;
+                        saveTasks();
+                        renderTasks();
+                        goalInput.value = ''; // Clear goal input
+                    } else {
+                        throw new Error('AI response did not contain a valid task array.');
+                    }
+                } catch (err) {
+                    console.error(err);
+                    setNotice(err.message || 'Failed to connect to the server or retrieve plan. Please verify your API key and connection.');
+                } finally {
+                    loadingSkeleton.classList.add('hidden');
+                    taskList.classList.remove('loading-fade');
+                    generateBtn.disabled = false;
+                    generateBtn.querySelector('.btn-text').textContent = '✨ Generate Step-by-Step Plan';
+                    updateStats();
+                }
+            });
+
+            // Initial Render
+            renderTasks();
+        });
+    </script>
+</body>
+</html>
